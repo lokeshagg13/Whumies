@@ -1,0 +1,210 @@
+<!-- Logic for Calculation of ETD 
+
+1. Delhi pincode (starts with 11): 3–5 days
+
+2. Other Indian pincode (6-digit): 5–7 days
+
+3. International (non-6 digit): 10–12 days
+
+4. If after 6 PM: delivery date calculation starts from tomorrow.
+
+5. Shows countdown to next 6 PM. -->
+
+<!-- Delivery Check Section -->
+<div class="delivery-check">
+  <div class="delivery-check-wrap">
+    <h4>Check Estimated delivery time</h4>
+    <div class="delivery-input-wrap">
+      <input type="number" id="pincode" placeholder="Enter Pincode" />
+      <button type="button" class="check-btn" onclick="checkDelivery()">
+        Check
+      </button>
+    </div>
+  </div>
+  <p id="error-msg" class="error-msg"></p>
+  <p id="delivery-result" class="delivery-result"></p>
+</div>
+
+<style>
+  .delivery-check {
+    margin-top: 15px;
+    font-family: inherit;
+  }
+
+  .delivery-check-wrap {
+    display: flex;
+    flex-direction: column;
+    row-gap: 0.2rem;
+  }
+
+  .delivery-check h4 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #666;
+  }
+
+  .delivery-input-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .delivery-input-wrap input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.2s ease;
+  }
+
+  .delivery-input-wrap input:focus {
+    border-color: #e53935; /* theme red */
+  }
+
+  .check-btn {
+    background: #000;
+    color: #fff;
+    border: none;
+    font-size: 14px;
+    padding: 10px 18px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+
+  .check-btn:hover {
+    background: #333;
+  }
+
+  .error-msg {
+    margin-top: 5px;
+    font-size: 13px;
+    color: #e53935;
+  }
+
+  .delivery-result {
+    margin-top: 8px;
+    font-size: 14px;
+    color: #333;
+  }
+
+  /* Shake animation */
+  @keyframes shake {
+    0% {
+      transform: translateX(0);
+    }
+    20% {
+      transform: translateX(-5px);
+    }
+    40% {
+      transform: translateX(5px);
+    }
+    60% {
+      transform: translateX(-5px);
+    }
+    80% {
+      transform: translateX(5px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .shake {
+    animation: shake 0.4s;
+    border-color: #e53935 !important;
+  }
+</style>
+
+<script>
+  function isAfter6PM() {
+    const now = new Date();
+    const sixPM = new Date();
+    sixPM.setHours(18, 0, 0, 0);
+    return now >= sixPM;
+  }
+
+  function timeUntilNext6PM() {
+    const now = new Date();
+    const next6PM = new Date();
+
+    if (isAfter6PM()) {
+      // tomorrow 6 PM
+      next6PM.setDate(next6PM.getDate() + 1);
+    }
+    next6PM.setHours(18, 0, 0, 0);
+
+    const diffMs = next6PM - now;
+    const hours = Math.floor(diffMs / (1000 * 60 * 60));
+    const minutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
+
+    return { hours, minutes };
+  }
+
+  function checkDelivery() {
+    const pincodeInput = document.getElementById("pincode");
+    const pincode = pincodeInput.value.trim();
+    const errorMsg = document.getElementById("error-msg");
+    const result = document.getElementById("delivery-result");
+
+    errorMsg.textContent = "";
+    result.textContent = "";
+
+    // Validate pincode (simple check: 6 digits for India or more for international)
+    if (!pincode || isNaN(pincode)) {
+      showError("Please enter a valid pincode.", pincodeInput);
+      return;
+    }
+
+    let x1, x2;
+
+    // Simple pincode mapping logic (adjust ranges as needed)
+    if (/^11/.test(pincode)) {
+      // Delhi pincode starts with 11
+      x1 = 3;
+      x2 = 5;
+    } else if (/^\d{6}$/.test(pincode)) {
+      // Indian 6-digit pincode but not Delhi
+      x1 = 5;
+      x2 = 7;
+    } else {
+      // International (not 6 digits)
+      x1 = 10;
+      x2 = 12;
+    }
+
+    const now = new Date();
+    const baseDate = isAfter6PM()
+      ? new Date(now.setDate(now.getDate() + 1))
+      : now;
+
+    const startDate = new Date(baseDate);
+    startDate.setDate(startDate.getDate() + x1);
+
+    const endDate = new Date(baseDate);
+    endDate.setDate(endDate.getDate() + x2);
+
+    const options = { day: "numeric", month: "short" };
+
+    const { hours, minutes } = timeUntilNext6PM();
+
+    result.innerHTML = `
+    Estimated delivery between <b>${startDate.toLocaleDateString(
+      "en-IN",
+      options
+    )}</b> 
+    and <b>${endDate.toLocaleDateString("en-IN", options)}</b>. 
+    Order within <b>${hours} hours ${minutes} minutes</b>.
+  `;
+  }
+
+  function showError(message, input) {
+    const errorMsg = document.getElementById("error-msg");
+    errorMsg.textContent = message;
+    input.classList.add("shake");
+    setTimeout(() => input.classList.remove("shake"), 400);
+  }
+</script>

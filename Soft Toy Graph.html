@@ -1,0 +1,75 @@
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+<script>
+  Chart.register(ChartDataLabels);
+</script>
+
+<!-- Chart Container -->
+<div style="max-width: 800px; max-height: 600px; margin: 100px auto; background: #FFF3F0; padding: 30px 80px; border-radius: 16px;">
+  <h2 style="text-align: center; color: #E5690F; font-size: 1.8rem; margin-bottom: 30px;">Soft Toys Speak Louder Than Words! 🧸</h2>
+  <canvas id="whumiesFunFactsChart" height="326" width="735" style="object-fit: contain;"></canvas>
+</div>
+
+<!-- Chart Script -->
+<script>
+  const ctx = document.getElementById('whumiesFunFactsChart').getContext('2d');
+
+  const whumiesFunFactsChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: [
+        'Sleep Better with Toys 😴',
+        'Help Emotional Bonding 💞',
+        'Kids Talk to Plushies 🐻',
+        'Most Gifts Are Kept 💝',
+        'Whumies Brings More Smiles 😄'
+      ],
+      datasets: [{
+        data: [90, 85, 60, 70, 25],
+        backgroundColor: [
+          '#F4A261',
+          '#E76F51',
+          '#2A9D8F',
+          '#E9C46A',
+          '#9D4EDD'
+        ],
+        borderRadius: 10,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      indexAxis: 'y',
+      animation: {
+        duration: 1200,
+        easing: 'easeOutQuart'
+      },
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          enabled: false
+        },
+        datalabels: {
+          anchor: 'end',
+          align: 'right',
+          color: '#333',
+          font: { weight: 'bold', size: 14 },
+          formatter: (value) => `${value}%`
+        }
+      },
+      scales: {
+        x: {
+          display: false,
+          grid: { display: false }
+        },
+        y: {
+          ticks: {
+            font: { size: 14, family: 'Arial' },
+            color: '#444'
+          },
+          grid: { display: false }
+        }
+      }
+    },
+    plugins: [ChartDataLabels]
+  });
+</script>
