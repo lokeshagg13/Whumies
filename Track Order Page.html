@@ -7,16 +7,27 @@
         Enter your order number and mobile number to get your order details.
       </p>
 
-      <form id="whumiesTrackOrderForm" class="whumies-track-order-form">
+      <form
+        id="whumiesTrackOrderForm"
+        class="whumies-track-order-form"
+        novalidate
+      >
         <div class="whumies-form-group">
           <label for="whumiesOrderNumber">Order Number</label>
-          <input
-            type="text"
-            id="whumiesOrderNumber"
-            name="order_number"
-            placeholder="Enter your order number"
-            required
-          />
+
+          <div class="whumies-order-input-wrap">
+            <span class="whumies-order-prefix">#wh</span>
+            <input
+              type="text"
+              id="whumiesOrderNumber"
+              name="order_number"
+              class="whumies-order-input"
+              inputmode="numeric"
+              autocomplete="off"
+              maxlength="10"
+              required
+            />
+          </div>
         </div>
 
         <div class="whumies-form-group">
@@ -27,6 +38,8 @@
             name="mobile_number"
             placeholder="Enter your mobile number"
             inputmode="numeric"
+            autocomplete="tel"
+            maxlength="15"
             required
           />
         </div>
@@ -36,7 +49,10 @@
         </button>
       </form>
 
-      <div id="whumiesTrackOrderMessage" class="whumies-track-order-message"></div>
+      <div
+        id="whumiesTrackOrderMessage"
+        class="whumies-track-order-message"
+      ></div>
     </div>
   </div>
 </section>
@@ -129,6 +145,51 @@
     box-shadow: 0 0 0 4px rgba(191, 0, 0, 0.08);
   }
 
+  .whumies-order-input-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .whumies-order-prefix {
+    position: absolute;
+    top: 50%;
+    left: 16px;
+    transform: translateY(-50%);
+    color: #3d342f;
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+    z-index: 2;
+    text-transform: lowercase;
+  }
+
+  .whumies-order-input {
+    width: 100%;
+    height: 54px;
+    padding: 0 16px;
+    padding-left: 48px !important;
+    border: 1px solid #ddd4ce;
+    border-radius: 12px;
+    background: #fff;
+    color: #3d342f;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.25s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  .whumies-order-input::placeholder {
+    color: #a1938b;
+  }
+
+  .whumies-order-input:focus {
+    border-color: #bf0000;
+    box-shadow: 0 0 0 4px rgba(191, 0, 0, 0.08);
+  }
+
   .whumies-track-order-btn {
     margin-top: 8px;
     height: 54px;
@@ -153,6 +214,12 @@
     font-size: 14px;
     color: #3d342f;
     min-height: 20px;
+    line-height: 1.5;
+  }
+
+  .whumies-input-error {
+    border-color: #bf0000 !important;
+    box-shadow: 0 0 0 4px rgba(191, 0, 0, 0.08) !important;
   }
 
   @media (max-width: 767px) {
@@ -178,25 +245,212 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
     const form = document.getElementById("whumiesTrackOrderForm");
+    const orderInput = document.getElementById("whumiesOrderNumber");
+    const mobileInput = document.getElementById("whumiesMobileNumber");
     const messageBox = document.getElementById("whumiesTrackOrderMessage");
 
-    form.addEventListener("submit", function (e) {
+    const ORDER_MIN_LENGTH = 4;
+    const ORDER_MAX_LENGTH = 10;
+    const MOBILE_MIN_LENGTH = 6;
+    const MOBILE_MAX_LENGTH = 15;
+
+    function sanitizeText(value) {
+      return value.replace(/[<>"'`;(){}[\]\\]/g, "").trim();
+    }
+
+    function digitsOnly(value) {
+      return value.replace(/\D/g, "");
+    }
+
+    function clearErrors() {
+      orderInput.classList.remove("whumies-input-error");
+      mobileInput.classList.remove("whumies-input-error");
+      messageBox.textContent = "";
+    }
+
+    function showError(message, field) {
+      messageBox.textContent = message;
+      messageBox.style.color = "#bf0000";
+
+      if (field === "order") {
+        orderInput.classList.add("whumies-input-error");
+        orderInput.focus();
+      }
+
+      if (field === "mobile") {
+        mobileInput.classList.add("whumies-input-error");
+        mobileInput.focus();
+      }
+    }
+
+    orderInput.addEventListener("input", function () {
+      let cleanValue = sanitizeText(orderInput.value);
+      cleanValue = digitsOnly(cleanValue);
+      cleanValue = cleanValue.slice(0, ORDER_MAX_LENGTH);
+      orderInput.value = cleanValue;
+      orderInput.classList.remove("whumies-input-error");
+    });
+
+    mobileInput.addEventListener("input", function () {
+      let cleanValue = sanitizeText(mobileInput.value);
+      cleanValue = digitsOnly(cleanValue);
+      cleanValue = cleanValue.slice(0, MOBILE_MAX_LENGTH);
+      mobileInput.value = cleanValue;
+      mobileInput.classList.remove("whumies-input-error");
+    });
+
+    mobileInput.addEventListener("paste", function (e) {
       e.preventDefault();
+      const pastedData = (e.clipboardData || window.clipboardData).getData(
+        "text",
+      );
+      const safeData = digitsOnly(sanitizeText(pastedData)).slice(
+        0,
+        MOBILE_MAX_LENGTH,
+      );
+      mobileInput.value = safeData;
+    });
 
-      const orderNumber = document.getElementById("whumiesOrderNumber").value.trim();
-      const mobileNumber = document.getElementById("whumiesMobileNumber").value.trim();
+    orderInput.addEventListener("paste", function (e) {
+      e.preventDefault();
+      const pastedData = (e.clipboardData || window.clipboardData).getData(
+        "text",
+      );
+      let safeData = sanitizeText(pastedData).toLowerCase();
+      safeData = safeData.replace(/^wh/i, "");
+      safeData = digitsOnly(safeData).slice(0, ORDER_MAX_LENGTH);
+      orderInput.value = safeData;
+    });
 
-      if (!orderNumber || !mobileNumber) {
-        messageBox.textContent = "Please fill in both order number and mobile number.";
-        messageBox.style.color = "#bf0000";
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+      clearErrors();
+
+      let rawOrder = sanitizeText(orderInput.value).toLowerCase();
+      rawOrder = rawOrder.replace(/^wh/i, "");
+      rawOrder = digitsOnly(rawOrder);
+
+      let rawMobile = sanitizeText(mobileInput.value);
+      rawMobile = digitsOnly(rawMobile);
+
+      // ---------- VALIDATION ----------
+      if (!rawOrder) {
+        showError("Please enter your order number.", "order");
         return;
       }
 
-      messageBox.textContent = "Details will appear here after we connect the button action.";
+      if (
+        rawOrder.length < ORDER_MIN_LENGTH ||
+        rawOrder.length > ORDER_MAX_LENGTH
+      ) {
+        showError("Order number is invalid.", "order");
+        return;
+      }
+
+      if (!rawMobile) {
+        showError("Please enter your mobile number.", "mobile");
+        return;
+      }
+
+      if (
+        rawMobile.length < MOBILE_MIN_LENGTH ||
+        rawMobile.length > MOBILE_MAX_LENGTH
+      ) {
+        showError("Please enter a valid mobile number.", "mobile");
+        return;
+      }
+
+      if (/^0+$/.test(rawMobile)) {
+        showError("Mobile number cannot contain only zeros.", "mobile");
+        return;
+      }
+
+      const fullOrderNumber = "wh" + rawOrder;
+
+      // ---------- LOADING STATE ----------
+      messageBox.textContent = "Fetching your order details...";
       messageBox.style.color = "#3d342f";
 
-      console.log("Order Number:", orderNumber);
-      console.log("Mobile Number:", mobileNumber);
+      try {
+        const response = await fetch(
+          "https://whumies-order-tracker-production.up.railway.app/api/track-order",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              orderNumber: fullOrderNumber,
+              mobileNumber: rawMobile,
+            }),
+          },
+        );
+
+        const data = await response.json();
+
+        if (!response.ok || !data.success) {
+          messageBox.textContent = data.message || "No matching order found.";
+          messageBox.style.color = "#bf0000";
+          return;
+        }
+
+        // ---------- SUCCESS ----------
+        renderOrderDetails(data.order);
+      } catch (error) {
+        messageBox.textContent = "Something went wrong. Please try again.";
+        messageBox.style.color = "#bf0000";
+      }
     });
+
+    function renderOrderDetails(order) {
+      const messageBox = document.getElementById("whumiesTrackOrderMessage");
+
+      let productsHTML = order.products
+        .map(
+          (p) => `
+    <div style="margin-bottom:8px;">
+      <strong>${p.name}</strong> × ${p.quantity}<br/>
+      ₹${p.lineTotal?.amount || "-"}
+    </div>
+  `,
+        )
+        .join("");
+
+      let trackingHTML = order.tracking.length
+        ? order.tracking
+            .map(
+              (t) => `
+        <div>
+          ${t.company || ""} - 
+          <a href="${t.trackingUrl}" target="_blank">Track Package</a>
+        </div>
+      `,
+            )
+            .join("")
+        : "Tracking not available yet.";
+
+      messageBox.innerHTML = `
+    <div style="margin-top:20px; text-align:left;">
+      <h3 style="margin-bottom:10px;">Order Details</h3>
+
+      <p><strong>Order:</strong> ${order.orderNumber}</p>
+      <p><strong>Status:</strong> ${order.fulfillmentStatus || "Processing"}</p>
+      <p><strong>Payment:</strong> ${order.paymentMethod}</p>
+      <p><strong>Total:</strong> ₹${order.totalAmount?.amount}</p>
+
+      <hr style="margin:15px 0;"/>
+
+      <h4>Products</h4>
+      ${productsHTML}
+
+      <hr style="margin:15px 0;"/>
+
+      <h4>Tracking</h4>
+      ${trackingHTML}
+    </div>
+  `;
+
+      messageBox.style.color = "#3d342f";
+    }
   });
 </script>
