@@ -51,17 +51,15 @@
     position:absolute; top:6px; right:8px; font-size:18px; line-height:1;
     cursor:pointer; padding:4px;
   }
-
-  /* Progress bar styling */
-  .whu-progress{
-    width: 100%; height: 4px; background: #eee;
-    border-radius: 4px; overflow: hidden; margin-top: 8px;
+  .whu-progress{ 
+    width: 100%; height: 4px; background: #eee; 
+    border-radius: 4px; overflow: hidden; margin-top: 8px; 
   }
-  .whu-progress-fill{
-    width: 0%; height: 100%; background: linear-gradient(90deg,#e5690f,#ff9c3d);
-    transition: none;
+  .whu-progress-fill{ 
+    width: 0%; height: 100%; background: linear-gradient(90deg,#e5690f,#ff9c3d); 
+    transition: none; 
   }
-
+  
   @media (max-width: 480px){
     .whu-sales-pop{ left: 10px; right: 10px; bottom: 12px; max-width: unset; }
     .whu-img{ width: 48px; height: 48px; }
@@ -70,7 +68,6 @@
 
 <script>
 (function(){
-  // ===== Config from settings =====
   var ENABLED = {{ section.settings.enable | json }};
   if(!ENABLED) return;
 
@@ -78,19 +75,23 @@
   var MAX_DELAY = ({{ section.settings.max_delay | default: 180 | json }}) * 1000;  // seconds → ms
   var SHOW_TIME = ({{ section.settings.display_duration | default: 10 | json }}) * 1000;
 
-  // Customer names & cities list (newline-separated in settings)
-  var NAMES = {{ section.settings.customer_names | json }}.split('\n').map(name => name.trim()).filter(name => name);
-  var CITIES = {{ section.settings.city_names | json }}.split('\n').map(city => city.trim()).filter(city => city);
+  // First names and last names
+  var FIRST_NAMES = {{ section.settings.first_names | json }}.split('\n').map(n => n.trim()).filter(n => n);
+  var LAST_NAMES = {{ section.settings.last_names | json }}.split('\n').map(n => n.trim()).filter(n => n);
 
-  // Build products array from selected collection (server-side Liquid → JS)
+  // Cities
+  var CITIES = {{ section.settings.city_names | json }}.split('\n').map(c => c.trim()).filter(c => c);
+
+  // Products
   var PRODUCTS = [
     {% if coll and coll.products_count > 0 %}
       {% for p in coll.products limit: 50 %}
-        {
-          "title": {{ p.title | json }},
-          "url": {{ p.url | json }},
-          "image": {% if p.featured_media %}{{ p.featured_media | image_url: width: 200, height: 200, crop: "center" | json }}{% else %}null{% endif %}
-        }{% unless forloop.last %},{% endunless %}
+        { 
+            "title": {{ p.title | json }}, 
+            "url": {{ p.url | json }}, 
+            "image": {% if p.featured_media %}{{ p.featured_media | image_url: width: 200, height: 200, crop: "center" | json }}{% else %}null{% endif %} 
+        }
+        {% unless forloop.last %},{% endunless %}
       {% endfor %}
     {% endif %}
   ];
@@ -100,18 +101,19 @@
     {% for block in section.blocks %}
       {% if block.type == 'product' and all_products[block.settings.prod] %}
         {% assign bp = all_products[block.settings.prod] %}
-        {
-          "title": {{ bp.title | json }},
-          "url": {{ bp.url | json }},
-          "image": {% if bp.featured_media %}{{ bp.featured_media | image_url: width: 200, height: 200, crop: "center" | json }}{% else %}null{% endif %}
-        }{% unless forloop.last %},{% endunless %}
+        { 
+            "title": {{ bp.title | json }},
+            "url": {{ bp.url | json }}, 
+            "image": {% if bp.featured_media %}{{ bp.featured_media | image_url: width: 200, height: 200, crop: "center" | json }}{% else %}null{% endif %} 
+        }
+        {% unless forloop.last %},{% endunless %}
       {% endif %}
     {% endfor %}
   ];
   if (OVERRIDE_PRODUCTS.length) PRODUCTS = OVERRIDE_PRODUCTS.concat(PRODUCTS);
 
   // Guards
-  if (!PRODUCTS.length || !NAMES.length || !CITIES.length) return;
+  if (!PRODUCTS.length || !FIRST_NAMES.length || !LAST_NAMES.length || !CITIES.length) return;
 
   // DOM refs
   var root = document.getElementById('whu-sales-pop');
@@ -122,39 +124,37 @@
   var linkEl = root.querySelector('.whu-link');
   var closeBtn = root.querySelector('.whu-close');
   var progressFill = root.querySelector('.whu-progress-fill');
- 
-  function randBetween(min, max){
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+
+  function randBetween(min, max){ 
+    return Math.floor(Math.random() * (max - min + 1)) + min; 
     }
-
   function pick(arr){ return arr[randBetween(0, arr.length - 1)]; }
-
-  function firstNameOnly(full){
-    var parts = String(full).trim().split(/\s+/);
-    return parts[0] + (parts[1] ? " " + parts[1][0].toUpperCase() + "." : "");
-  }
 
   function animateProgress(){
     progressFill.style.transition = "none";
     progressFill.style.width = "0%";
-    void progressFill.offsetWidth; // reflow
+    void progressFill.offsetWidth;
     progressFill.style.transition = "width " + (SHOW_TIME/1000) + "s linear";
     progressFill.style.width = "100%";
   }
 
   function showOnce(){
-    // choose random combo
-    var chosenName = firstNameOnly(pick(NAMES));
-    var chosenCity = pick(CITIES);
+    var fname = pick(FIRST_NAMES);
+    var lname = pick(LAST_NAMES);
+    var city = pick(CITIES);
     var product = pick(PRODUCTS);
-    nameEl.textContent = chosenName;
-    cityEl.textContent = chosenCity;
+
+    // First name + last initial
+    var displayName = fname + " " + (lname ? lname[0].toUpperCase() + "." : "");
+
+    nameEl.textContent = displayName;
+    cityEl.textContent = city;
     prodEl.textContent = product.title;
     linkEl.setAttribute('href', product.url);
-    if (product.image){
+    if (product.image){ 
         img.src = product.image; 
         img.alt = product.title; 
-     }
+        }
 
     root.style.display = 'flex';
     root.setAttribute('aria-hidden', 'false');
@@ -169,11 +169,10 @@
     }, SHOW_TIME);
   }
 
-  function scheduleNext(){
+  function scheduleNext(){ 
     setTimeout(showOnce, randBetween(MIN_DELAY, MAX_DELAY)); 
     }
 
-  // Manual close
   closeBtn.addEventListener('click', function(e){
     e.stopPropagation();
     root.style.display = 'none'; root.setAttribute('aria-hidden','true');
@@ -194,18 +193,18 @@
     { "type": "checkbox", "id": "enable", "label": "Enable popup", "default": true },
 
     { "type": "collection", "id": "source_collection", "label": "Product collection (dynamic source)" },
-    { "type": "paragraph", "content": "Optionally add specific products below; they’ll be prioritized." },
+    { "type": "paragraph", "content": "Optionally add specific products under this section; they’ll be prioritized." },
 
     { "type": "header", "content": "Timing" },
     { "type": "range", "id": "min_delay", "label": "Min delay (seconds)", "min": 10, "max": 300, "step": 10, "default": 40 },
     { "type": "range", "id": "max_delay", "label": "Max delay (seconds)", "min": 20, "max": 600, "step": 10, "default": 180 },
     { "type": "range", "id": "display_duration", "label": "Show for (seconds)", "min": 5, "max": 30, "step": 1, "default": 10 },
-
-    { "type": "header", "content": "Customer Names (one per line)" },
-    { "type": "textarea", "id": "customer_names", "label": "Names", "default": "Aarav Sharma\nDiya Kapoor\nIshaan Mehta\nMeera S.\nKabir A." },
-
-    { "type": "header", "content": "City Names (one per line)" },
-    { "type": "textarea", "id": "city_names", "label": "Cities", "default": "Delhi\nMumbai\nBengaluru\nHyderabad\nGurugram" }
+    { "type": "header", "content": "Customer First Names" },
+    { "type": "textarea", "id": "first_names", "label": "First names (one per line)", "default": "Aarav\nDiya\nIshaan\nMeera\nKabir" },
+    { "type": "header", "content": "Customer Last Names" },
+    { "type": "textarea", "id": "last_names", "label": "Last names (one per line)", "default": "Sharma\nKapoor\nMehta\nSingh\nAgarwal" },
+    { "type": "header", "content": "City Names" },
+    { "type": "textarea", "id": "city_names", "label": "Cities (one per line)", "default": "Delhi\nMumbai\nBengaluru\nHyderabad\nGurugram" }
   ],
   "blocks": [
     {

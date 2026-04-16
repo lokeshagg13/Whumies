@@ -1,0 +1,202 @@
+<section class="whumies-track-order-section">
+  <div class="whumies-track-order-wrapper">
+    <div class="whumies-track-order-card">
+      <p class="whumies-track-order-eyebrow">Whumies Order Support</p>
+      <h1 class="whumies-track-order-title">Track Your Order</h1>
+      <p class="whumies-track-order-subtitle">
+        Enter your order number and mobile number to get your order details.
+      </p>
+
+      <form id="whumiesTrackOrderForm" class="whumies-track-order-form">
+        <div class="whumies-form-group">
+          <label for="whumiesOrderNumber">Order Number</label>
+          <input
+            type="text"
+            id="whumiesOrderNumber"
+            name="order_number"
+            placeholder="Enter your order number"
+            required
+          />
+        </div>
+
+        <div class="whumies-form-group">
+          <label for="whumiesMobileNumber">Mobile Number</label>
+          <input
+            type="tel"
+            id="whumiesMobileNumber"
+            name="mobile_number"
+            placeholder="Enter your mobile number"
+            inputmode="numeric"
+            required
+          />
+        </div>
+
+        <button type="submit" class="whumies-track-order-btn">
+          Get Details
+        </button>
+      </form>
+
+      <div id="whumiesTrackOrderMessage" class="whumies-track-order-message"></div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .whumies-track-order-section {
+    width: 100%;
+    background: #f8f5f2;
+    padding: 70px 20px 90px;
+  }
+
+  .whumies-track-order-wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .whumies-track-order-card {
+    max-width: 620px;
+    margin: 0 auto;
+    background: #ffffff;
+    border: 1px solid rgba(191, 0, 0, 0.08);
+    border-radius: 20px;
+    padding: 42px 32px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  }
+
+  .whumies-track-order-eyebrow {
+    margin: 0 0 10px;
+    font-size: 13px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #bf0000;
+    font-weight: 600;
+  }
+
+  .whumies-track-order-title {
+    margin: 0;
+    font-size: 38px;
+    line-height: 1.2;
+    color: #3d342f;
+    font-weight: 600;
+  }
+
+  .whumies-track-order-subtitle {
+    margin: 14px 0 30px;
+    font-size: 16px;
+    line-height: 1.7;
+    color: #6b5f59;
+  }
+
+  .whumies-track-order-form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .whumies-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .whumies-form-group label {
+    font-size: 15px;
+    color: #3d342f;
+    font-weight: 500;
+  }
+
+  .whumies-form-group input {
+    width: 100%;
+    height: 54px;
+    padding: 0 16px;
+    border: 1px solid #ddd4ce;
+    border-radius: 12px;
+    background: #fff;
+    color: #3d342f;
+    font-size: 15px;
+    outline: none;
+    transition: all 0.25s ease;
+    font-family: inherit;
+    box-sizing: border-box;
+  }
+
+  .whumies-form-group input::placeholder {
+    color: #a1938b;
+  }
+
+  .whumies-form-group input:focus {
+    border-color: #bf0000;
+    box-shadow: 0 0 0 4px rgba(191, 0, 0, 0.08);
+  }
+
+  .whumies-track-order-btn {
+    margin-top: 8px;
+    height: 54px;
+    border: none;
+    border-radius: 14px;
+    background: #bf0000;
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .whumies-track-order-btn:hover {
+    background: #a80000;
+    transform: translateY(-1px);
+  }
+
+  .whumies-track-order-message {
+    margin-top: 18px;
+    font-size: 14px;
+    color: #3d342f;
+    min-height: 20px;
+  }
+
+  @media (max-width: 767px) {
+    .whumies-track-order-section {
+      padding: 50px 16px 70px;
+    }
+
+    .whumies-track-order-card {
+      padding: 28px 20px;
+      border-radius: 16px;
+    }
+
+    .whumies-track-order-title {
+      font-size: 30px;
+    }
+
+    .whumies-track-order-subtitle {
+      font-size: 15px;
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("whumiesTrackOrderForm");
+    const messageBox = document.getElementById("whumiesTrackOrderMessage");
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const orderNumber = document.getElementById("whumiesOrderNumber").value.trim();
+      const mobileNumber = document.getElementById("whumiesMobileNumber").value.trim();
+
+      if (!orderNumber || !mobileNumber) {
+        messageBox.textContent = "Please fill in both order number and mobile number.";
+        messageBox.style.color = "#bf0000";
+        return;
+      }
+
+      messageBox.textContent = "Details will appear here after we connect the button action.";
+      messageBox.style.color = "#3d342f";
+
+      console.log("Order Number:", orderNumber);
+      console.log("Mobile Number:", mobileNumber);
+    });
+  });
+</script>
