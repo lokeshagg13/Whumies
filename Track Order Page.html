@@ -1,58 +1,129 @@
 <section class="whumies-track-order-section">
   <div class="whumies-track-order-wrapper">
-    <div class="whumies-track-order-card">
-      <p class="whumies-track-order-eyebrow">Whumies Order Support</p>
-      <h1 class="whumies-track-order-title">Track Your Order</h1>
-      <p class="whumies-track-order-subtitle">
-        Enter your order number and mobile number to get your order details.
-      </p>
+    <div class="whumies-track-order-flip-card" id="whumiesTrackOrderFlipCard">
+      <div class="whumies-track-order-flip-inner">
+        <!-- FRONT: FORM SIDE -->
+        <div class="whumies-track-order-face whumies-track-order-face-front">
+          <div class="whumies-track-order-card">
+            <p class="whumies-track-order-eyebrow">Whumies Order Support</p>
+            <h1 class="whumies-track-order-title">Track Your Order</h1>
+            <p class="whumies-track-order-subtitle">
+              Enter your order number and either your mobile number or email
+              address to get your order details.
+            </p>
 
-      <form
-        id="whumiesTrackOrderForm"
-        class="whumies-track-order-form"
-        novalidate
-      >
-        <div class="whumies-form-group">
-          <label for="whumiesOrderNumber">Order Number</label>
+            <form
+              id="whumiesTrackOrderForm"
+              class="whumies-track-order-form"
+              novalidate
+            >
+              <div class="whumies-form-group">
+                <label for="whumiesOrderNumber">Order Number</label>
+                <div class="whumies-order-input-wrap">
+                  <span class="whumies-order-prefix">#wh</span>
+                  <input
+                    type="text"
+                    id="whumiesOrderNumber"
+                    name="order_number"
+                    class="whumies-order-input"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    maxlength="10"
+                    required
+                  />
+                </div>
+              </div>
 
-          <div class="whumies-order-input-wrap">
-            <span class="whumies-order-prefix">#wh</span>
-            <input
-              type="text"
-              id="whumiesOrderNumber"
-              name="order_number"
-              class="whumies-order-input"
-              inputmode="numeric"
-              autocomplete="off"
-              maxlength="10"
-              required
-            />
+              <div class="whumies-form-group">
+                <label>Search Using</label>
+                <div class="whumies-search-mode-switch">
+                  <button
+                    type="button"
+                    class="whumies-mode-btn is-active"
+                    data-mode="mobile"
+                  >
+                    Mobile Number
+                  </button>
+                  <button
+                    type="button"
+                    class="whumies-mode-btn"
+                    data-mode="email"
+                  >
+                    Email Address
+                  </button>
+                </div>
+              </div>
+
+              <div
+                class="whumies-form-group"
+                id="whumiesMobileGroup"
+                style="display: flex"
+              >
+                <label for="whumiesMobileNumber">Mobile Number</label>
+                <input
+                  type="tel"
+                  id="whumiesMobileNumber"
+                  name="mobile_number"
+                  placeholder="Enter your mobile number"
+                  inputmode="numeric"
+                  autocomplete="tel"
+                  maxlength="15"
+                />
+              </div>
+
+              <div
+                class="whumies-form-group whumies-hidden"
+                id="whumiesEmailGroup"
+                style="display: none"
+              >
+                <label for="whumiesEmailAddress">Email Address</label>
+                <input
+                  type="email"
+                  id="whumiesEmailAddress"
+                  name="email"
+                  placeholder="Enter your email address"
+                  autocomplete="email"
+                  maxlength="120"
+                />
+              </div>
+
+              <button
+                type="submit"
+                class="whumies-track-order-btn"
+                id="whumiesSubmitBtn"
+              >
+                <span class="whumies-btn-text">Get Details</span>
+                <span class="whumies-btn-loader" aria-hidden="true"></span>
+              </button>
+            </form>
+
+            <div
+              id="whumiesTrackOrderMessage"
+              class="whumies-track-order-message"
+            ></div>
           </div>
         </div>
 
-        <div class="whumies-form-group">
-          <label for="whumiesMobileNumber">Mobile Number</label>
-          <input
-            type="tel"
-            id="whumiesMobileNumber"
-            name="mobile_number"
-            placeholder="Enter your mobile number"
-            inputmode="numeric"
-            autocomplete="tel"
-            maxlength="15"
-            required
-          />
+        <!-- BACK: DETAILS SIDE -->
+        <div class="whumies-track-order-face whumies-track-order-face-back">
+          <div class="whumies-track-order-card whumies-track-order-card-back">
+            <div
+              id="whumiesOrderDetailsMount"
+              class="whumies-order-details-mount"
+            ></div>
+
+            <div class="whumies-order-details-actions">
+              <button
+                type="button"
+                id="whumiesSearchAgainBtn"
+                class="whumies-secondary-btn"
+              >
+                Search Another Order
+              </button>
+            </div>
+          </div>
         </div>
-
-        <button type="submit" class="whumies-track-order-btn">
-          Get Details
-        </button>
-      </form>
-
-      <div
-        id="whumiesTrackOrderMessage"
-        class="whumies-track-order-message"
-      ></div>
+      </div>
     </div>
   </div>
 </section>
@@ -69,14 +140,51 @@
     margin: 0 auto;
   }
 
-  .whumies-track-order-card {
+  .whumies-track-order-flip-card {
     max-width: 620px;
     margin: 0 auto;
+    perspective: 1800px;
+  }
+
+  .whumies-track-order-flip-inner {
+    position: relative;
+    width: 100%;
+    min-height: 760px;
+    transform-style: preserve-3d;
+    transition: transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .whumies-track-order-flip-card.is-flipped .whumies-track-order-flip-inner {
+    transform: rotateY(180deg);
+  }
+
+  .whumies-track-order-face {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .whumies-track-order-face-back {
+    transform: rotateY(180deg);
+  }
+
+  .whumies-track-order-card {
+    width: 100%;
+    height: 100%;
     background: #ffffff;
     border: 1px solid rgba(191, 0, 0, 0.08);
     border-radius: 20px;
     padding: 42px 32px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+  }
+
+  .whumies-track-order-card-back {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
   }
 
   .whumies-track-order-eyebrow {
@@ -181,13 +289,38 @@
     box-sizing: border-box;
   }
 
-  .whumies-order-input::placeholder {
-    color: #a1938b;
+  .whumies-search-mode-switch {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
   }
 
-  .whumies-order-input:focus {
+  .whumies-mode-btn {
+    height: 46px;
+    border: 1px solid #ddd4ce;
+    border-radius: 12px;
+    background: #fff;
+    color: #6b5f59;
+    font-size: 14px;
+    font-weight: 500;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .whumies-mode-btn:hover {
+    border-color: rgba(191, 0, 0, 0.35);
+    color: #bf0000;
+  }
+
+  .whumies-mode-btn.is-active {
+    background: #bf0000;
     border-color: #bf0000;
-    box-shadow: 0 0 0 4px rgba(191, 0, 0, 0.08);
+    color: #fff;
+  }
+
+  .whumies-hidden {
+    display: none;
   }
 
   .whumies-track-order-btn {
@@ -202,11 +335,42 @@
     font-family: inherit;
     cursor: pointer;
     transition: all 0.25s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    position: relative;
+    overflow: hidden;
   }
 
   .whumies-track-order-btn:hover {
     background: #a80000;
     transform: translateY(-1px);
+  }
+
+  .whumies-track-order-btn:disabled {
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .whumies-track-order-btn.is-loading {
+    background: #bf0000;
+    opacity: 0.9;
+  }
+
+  .whumies-btn-loader {
+    width: 17px;
+    height: 17px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.28);
+    border-top-color: #ffffff;
+    animation: whumiesSpin 0.75s linear infinite;
+    display: none;
+    flex-shrink: 0;
+  }
+
+  .whumies-track-order-btn.is-loading .whumies-btn-loader {
+    display: inline-block;
   }
 
   .whumies-track-order-message {
@@ -222,9 +386,243 @@
     box-shadow: 0 0 0 4px rgba(191, 0, 0, 0.08) !important;
   }
 
+  .whumies-error-box {
+    background: #fff0f0;
+    color: #bf0000;
+    padding: 12px 14px;
+    border-radius: 10px;
+    border: 1px solid rgba(191, 0, 0, 0.2);
+    animation: whumiesErrorIn 0.28s ease;
+  }
+
+  .whumies-order-details-mount {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .whumies-order-details-layout {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 0;
+  }
+
+  .whumies-order-details-card {
+    padding: 0;
+    text-align: left;
+    animation: whumiesDetailsFadeUp 0.45s ease;
+    height: 100%;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .whumies-order-details-heading {
+    margin: 0 0 18px;
+    font-size: 28px;
+    line-height: 1.2;
+    color: #3d342f;
+    font-weight: 600;
+  }
+
+  .whumies-order-details-block {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border-radius: 16px;
+    background: #fff8f8;
+    border: 1px solid rgba(191, 0, 0, 0.1);
+  }
+
+  .whumies-detail-row {
+    font-size: 15px;
+    line-height: 1.7;
+    color: #3d342f;
+  }
+
+  .whumies-detail-label {
+    font-weight: 600;
+    color: #3d342f;
+  }
+
+  .whumies-detail-value {
+    color: #6b5f59;
+    word-break: break-word;
+  }
+
+  .whumies-detail-row-address .whumies-detail-value {
+    display: inline;
+  }
+
+  .whumies-order-products-section,
+  .whumies-order-tracking-section {
+    border-radius: 16px;
+    background: #fff8f8;
+    border: 1px solid rgba(191, 0, 0, 0.1);
+  }
+
+  .whumies-order-products-section {
+    margin-top: 22px;
+    padding: 20px;
+  }
+
+  .whumies-order-tracking-section {
+    flex-shrink: 0;
+    padding: 20px;
+    background: #fff4f4;
+    box-shadow: 0 -2px 0 rgba(191, 0, 0, 0.04);
+  }
+
+  .whumies-order-section-title {
+    margin: 0 0 12px;
+    font-size: 20px;
+    line-height: 1.3;
+    color: #3d342f;
+    font-weight: 600;
+  }
+
+  .whumies-order-products-list {
+    margin: 0;
+    padding-left: 20px;
+  }
+
+  .whumies-order-product-item {
+    margin-bottom: 14px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #6b5f59;
+  }
+
+  .whumies-order-product-name {
+    font-weight: 600;
+    color: #bf0000;
+  }
+
+  .whumies-order-product-meta,
+  .whumies-order-product-price,
+  .whumies-order-product-unit {
+    color: #6b5f59;
+  }
+
+  .whumies-order-product-price {
+    margin-top: 2px;
+  }
+
+  .whumies-tracking-helper {
+    margin: 0 0 12px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #6b5f59;
+  }
+
+  .whumies-tracking-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .whumies-tracking-item {
+    font-size: 15px;
+    line-height: 1.7;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #ffffff;
+    border: 1px solid rgba(191, 0, 0, 0.08);
+  }
+
+  .whumies-tracking-url-row {
+    margin-top: 4px;
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  .whumies-tracking-url-text {
+    color: #bf0000;
+    text-decoration: none;
+    word-break: break-all;
+    font-weight: 500;
+  }
+
+  .whumies-tracking-url-text:hover {
+    color: #a80000;
+    text-decoration: underline;
+  }
+
+  .whumies-tracking-note,
+  .whumies-order-empty {
+    font-size: 15px;
+    color: #8b7d75;
+  }
+
+  .whumies-order-details-actions {
+    margin-top: 20px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(191, 0, 0, 0.08);
+    display: flex;
+    justify-content: flex-start;
+    flex-shrink: 0;
+  }
+
+  .whumies-secondary-btn {
+    height: 50px;
+    padding: 0 18px;
+    border: 1px solid #bf0000;
+    border-radius: 14px;
+    background: #ffffff;
+    color: #bf0000;
+    font-size: 15px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+
+  .whumies-secondary-btn:hover {
+    background: #fff3f3;
+    transform: translateY(-1px);
+  }
+
+  @keyframes whumiesSpin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes whumiesErrorIn {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes whumiesDetailsFadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   @media (max-width: 767px) {
     .whumies-track-order-section {
       padding: 50px 16px 70px;
+    }
+
+    .whumies-track-order-flip-inner {
+      min-height: 920px;
     }
 
     .whumies-track-order-card {
@@ -239,6 +637,127 @@
     .whumies-track-order-subtitle {
       font-size: 15px;
     }
+
+    .whumies-search-mode-switch {
+      grid-template-columns: 1fr;
+    }
+
+    .whumies-order-details-heading {
+      font-size: 24px;
+    }
+
+    .whumies-order-section-title {
+      font-size: 18px;
+    }
+
+    .whumies-detail-row,
+    .whumies-order-product-item,
+    .whumies-tracking-helper,
+    .whumies-tracking-item,
+    .whumies-tracking-url-row,
+    .whumies-tracking-note,
+    .whumies-order-empty {
+      font-size: 14px;
+    }
+
+    .whumies-order-scroll-area {
+      padding-right: 4px;
+    }
+  }
+
+  .whumies-order-scroll-wrap {
+    position: relative;
+    flex: 1;
+    min-height: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .whumies-order-scroll-area {
+    margin-top: 10px;
+    flex: 1;
+    min-height: 0;
+    height: 100%;
+    overflow-y: auto;
+    padding-right: 8px;
+    padding-bottom: 44px;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(191, 0, 0, 0.45) rgba(191, 0, 0, 0.08);
+  }
+
+  .whumies-order-scroll-area::-webkit-scrollbar {
+    width: 10px;
+  }
+
+  .whumies-order-scroll-area::-webkit-scrollbar-thumb {
+    background: rgba(191, 0, 0, 0.35);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+  }
+
+  .whumies-order-scroll-area::-webkit-scrollbar-track {
+    background: rgba(191, 0, 0, 0.06);
+    border-radius: 999px;
+  }
+
+  /* bottom fade + message */
+  .whumies-scroll-indicator {
+    position: absolute;
+    left: 0;
+    right: 8px;
+    bottom: 0;
+    height: 56px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 8px;
+    padding: 0 14px 10px;
+    background: linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 248, 248, 0.92) 55%,
+      rgba(255, 248, 248, 1) 100%
+    );
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity 0.25s ease,
+      visibility 0.25s ease;
+  }
+
+  .whumies-scroll-indicator.is-visible {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .whumies-scroll-indicator-text {
+    font-size: 13px;
+    font-weight: 600;
+    color: #bf0000;
+    letter-spacing: 0.2px;
+  }
+
+  .whumies-scroll-indicator-arrow {
+    font-size: 16px;
+    line-height: 1;
+    color: #bf0000;
+    animation: whumiesScrollNudge 1.3s ease-in-out infinite;
+  }
+
+  @keyframes whumiesScrollNudge {
+    0%,
+    100% {
+      transform: translateY(0);
+      opacity: 0.85;
+    }
+    50% {
+      transform: translateY(4px);
+      opacity: 1;
+    }
   }
 </style>
 
@@ -247,30 +766,58 @@
     const form = document.getElementById("whumiesTrackOrderForm");
     const orderInput = document.getElementById("whumiesOrderNumber");
     const mobileInput = document.getElementById("whumiesMobileNumber");
+    const emailInput = document.getElementById("whumiesEmailAddress");
+    const mobileGroup = document.getElementById("whumiesMobileGroup");
+    const emailGroup = document.getElementById("whumiesEmailGroup");
+    const modeButtons = document.querySelectorAll(".whumies-mode-btn");
     const messageBox = document.getElementById("whumiesTrackOrderMessage");
+    const submitBtn = document.getElementById("whumiesSubmitBtn");
+    const submitBtnText = submitBtn.querySelector(".whumies-btn-text");
+    const flipCard = document.getElementById("whumiesTrackOrderFlipCard");
+    const detailsMount = document.getElementById("whumiesOrderDetailsMount");
+    const searchAgainBtn = document.getElementById("whumiesSearchAgainBtn");
 
     const ORDER_MIN_LENGTH = 4;
     const ORDER_MAX_LENGTH = 10;
     const MOBILE_MIN_LENGTH = 6;
     const MOBILE_MAX_LENGTH = 15;
 
+    let activeMode = "mobile";
+    let isSubmitting = false;
+
     function sanitizeText(value) {
-      return value.replace(/[<>"'`;(){}[\]\\]/g, "").trim();
+      return String(value || "")
+        .replace(/[<>"'`;(){}[\]\\]/g, "")
+        .trim();
     }
 
     function digitsOnly(value) {
       return value.replace(/\D/g, "");
     }
 
+    function isValidEmail(value) {
+      const email = sanitizeText(value).toLowerCase();
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "-")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
     function clearErrors() {
       orderInput.classList.remove("whumies-input-error");
       mobileInput.classList.remove("whumies-input-error");
-      messageBox.textContent = "";
+      emailInput.classList.remove("whumies-input-error");
+      messageBox.innerHTML = "";
     }
 
     function showError(message, field) {
-      messageBox.textContent = message;
-      messageBox.style.color = "#bf0000";
+      messageBox.innerHTML = `<div class="whumies-error-box">${escapeHTML(message)}</div>`;
 
       if (field === "order") {
         orderInput.classList.add("whumies-input-error");
@@ -281,14 +828,321 @@
         mobileInput.classList.add("whumies-input-error");
         mobileInput.focus();
       }
+
+      if (field === "email") {
+        emailInput.classList.add("whumies-input-error");
+        emailInput.focus();
+      }
     }
+
+    function setLoadingState(isLoading) {
+      isSubmitting = isLoading;
+      submitBtn.disabled = isLoading;
+      submitBtn.classList.toggle("is-loading", isLoading);
+      submitBtnText.textContent = isLoading
+        ? "Fetching Details..."
+        : "Get Details";
+    }
+
+    function flipToDetails() {
+      flipCard.classList.add("is-flipped");
+      setTimeout(function () {
+        const scrollArea = detailsMount.querySelector(
+          ".whumies-order-scroll-area",
+        );
+        if (scrollArea) scrollArea.scrollTop = 0;
+
+        const indicator = document.getElementById("whumiesScrollIndicator");
+        if (scrollArea && indicator) {
+          const hasOverflow =
+            scrollArea.scrollHeight > scrollArea.clientHeight + 4;
+          indicator.classList.toggle("is-visible", hasOverflow);
+        }
+      }, 250);
+    }
+
+    function flipToForm() {
+      flipCard.classList.remove("is-flipped");
+      clearErrors();
+      setTimeout(function () {
+        form.scrollIntoView({ behavior: "smooth", block: "start" });
+      }, 250);
+    }
+
+    function setMode(mode) {
+      activeMode = mode;
+
+      modeButtons.forEach((btn) => {
+        const isActive = btn.dataset.mode === mode;
+        btn.classList.toggle("is-active", isActive);
+        btn.setAttribute("aria-pressed", String(isActive));
+      });
+
+      if (mode === "mobile") {
+        mobileGroup.classList.remove("whumies-hidden");
+        mobileGroup.style.display = "flex";
+
+        emailGroup.classList.add("whumies-hidden");
+        emailGroup.style.display = "none";
+
+        emailInput.value = "";
+        emailInput.classList.remove("whumies-input-error");
+      } else {
+        emailGroup.classList.remove("whumies-hidden");
+        emailGroup.style.display = "flex";
+
+        mobileGroup.classList.add("whumies-hidden");
+        mobileGroup.style.display = "none";
+
+        mobileInput.value = "";
+        mobileInput.classList.remove("whumies-input-error");
+      }
+    }
+
+    function formatMoney(money) {
+      if (!money || !money.amount) return "-";
+      const amount = Number(money.amount);
+      const currency = money.currencyCode || "INR";
+
+      try {
+        return new Intl.NumberFormat("en-IN", {
+          style: "currency",
+          currency,
+          maximumFractionDigits: 2,
+        }).format(amount);
+      } catch (e) {
+        return `₹${amount.toFixed(2)}`;
+      }
+    }
+
+    function formatAddress(address) {
+      if (!address) return "-";
+
+      if (Array.isArray(address.formatted) && address.formatted.length) {
+        const nameLine = address.name ? [escapeHTML(address.name)] : [];
+        return [...nameLine, ...address.formatted.map(escapeHTML)].join(", ");
+      }
+
+      const parts = [
+        address.name,
+        address.address1,
+        address.address2,
+        address.city,
+        address.province,
+        address.zip,
+        address.country,
+      ]
+        .filter(Boolean)
+        .map(escapeHTML);
+
+      return parts.length ? parts.join(", ") : "-";
+    }
+
+    function setupScrollIndicator() {
+      const scrollArea = document.getElementById("whumiesOrderScrollArea");
+      const indicator = document.getElementById("whumiesScrollIndicator");
+
+      if (!scrollArea || !indicator) return;
+
+      function updateIndicator() {
+        const hasOverflow =
+          scrollArea.scrollHeight > scrollArea.clientHeight + 4;
+        const isNearBottom =
+          scrollArea.scrollTop + scrollArea.clientHeight >=
+          scrollArea.scrollHeight - 8;
+
+        indicator.classList.toggle("is-visible", hasOverflow && !isNearBottom);
+      }
+
+      scrollArea.addEventListener("scroll", updateIndicator);
+      window.addEventListener("resize", updateIndicator);
+
+      requestAnimationFrame(updateIndicator);
+    }
+
+    function renderOrderDetails(order) {
+      const productsHTML = (order.products || []).length
+        ? `
+          <ul class="whumies-order-products-list">
+            ${order.products
+              .map((product) => {
+                const productName = escapeHTML(product.name || "Product");
+                const variant = product.variant
+                  ? `, ${escapeHTML(product.variant)}`
+                  : "";
+                const quantity = Number(product.quantity || 0);
+                const unitPrice = formatMoney(product.unitPrice);
+                const lineTotal = formatMoney(product.lineTotal);
+
+                return `
+                  <li class="whumies-order-product-item">
+                    <span class="whumies-order-product-name">${productName}${variant}</span>
+                    <span class="whumies-order-product-meta">– Quantity: ${quantity}</span>
+                    <div class="whumies-order-product-price">
+                      – Price: ${lineTotal}
+                      ${
+                        quantity > 1
+                          ? `<span class="whumies-order-product-unit">(Unit Price: ${unitPrice})</span>`
+                          : ""
+                      }
+                    </div>
+                  </li>
+                `;
+              })
+              .join("")}
+          </ul>
+        `
+        : `<p class="whumies-order-empty">No product details available.</p>`;
+
+      const trackingHTML = (order.tracking || []).length
+        ? `
+          <div class="whumies-tracking-list">
+            ${(order.tracking || [])
+              .map((track) => {
+                const company = escapeHTML(track.company || "Courier");
+                const trackingNumber = escapeHTML(track.trackingNumber || "-");
+                const trackingUrl = track.trackingUrl
+                  ? `
+                    <div class="whumies-tracking-url-row">
+                      <span class="whumies-detail-label">Tracking URL:</span>
+                      <a
+                        href="${escapeHTML(track.trackingUrl)}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="whumies-tracking-url-text"
+                      >
+                        ${escapeHTML(track.trackingUrl)}
+                      </a>
+                    </div>
+                  `
+                  : "";
+
+                return `
+                  <div class="whumies-tracking-item">
+                    <div class="whumies-detail-row">
+                      <span class="whumies-detail-label">Courier:</span>
+                      <span class="whumies-detail-value">${company}</span>
+                    </div>
+                    <div class="whumies-detail-row">
+                      <span class="whumies-detail-label">Tracking Number:</span>
+                      <span class="whumies-detail-value">${trackingNumber}</span>
+                    </div>
+                    ${trackingUrl}
+                  </div>
+                `;
+              })
+              .join("")}
+          </div>
+        `
+        : `
+          <div class="whumies-tracking-note">
+            Tracking not available yet.
+          </div>
+        `;
+
+      detailsMount.innerHTML = `
+        <div class="whumies-order-details-card">
+          <div class="whumies-order-details-layout">
+            <div class="whumies-order-scroll-wrap">
+              <div class="whumies-order-details-heading-bar">
+                <h3 class="whumies-order-details-heading">Order Details</h3>
+              </div>
+
+              <div class="whumies-order-scroll-area" id="whumiesOrderScrollArea">
+                <div class="whumies-order-details-block">
+                  <div class="whumies-detail-row">
+                        <span class="whumies-detail-label">Order ID:</span>
+                        <span class="whumies-detail-value">${escapeHTML(order.orderNumber || "-")}</span>
+                      </div>
+
+                      <div class="whumies-detail-row">
+                        <span class="whumies-detail-label">Customer Email:</span>
+                        <span class="whumies-detail-value">${escapeHTML(order.customerEmail || "-")}</span>
+                      </div>
+
+                      <div class="whumies-detail-row">
+                        <span class="whumies-detail-label">Customer Phone:</span>
+                        <span class="whumies-detail-value">${escapeHTML(order.customerPhone || "-")}</span>
+                      </div>
+
+                      <div class="whumies-detail-row whumies-detail-row-address">
+                        <span class="whumies-detail-label">Customer Address:</span>
+                        <span class="whumies-detail-value">${formatAddress(order.customerAddress)}</span>
+                      </div>
+
+                      <div class="whumies-detail-row">
+                        <span class="whumies-detail-label">Payment Method:</span>
+                        <span class="whumies-detail-value">${escapeHTML(order.paymentMethod || "-")}</span>
+                      </div>
+
+                      <div class="whumies-detail-row">
+                        <span class="whumies-detail-label">Total Amount:</span>
+                        <span class="whumies-detail-value">${formatMoney(order.totalAmount)}</span>
+                      </div>
+
+                      <div class="whumies-detail-row">
+                        <span class="whumies-detail-label">Fulfillment Status:</span>
+                        <span class="whumies-detail-value">${escapeHTML(order.fulfillmentStatus || "-")}</span>
+                      </div>
+
+                      <div class="whumies-detail-row">
+                        <span class="whumies-detail-label">Financial Status:</span>
+                        <span class="whumies-detail-value">${escapeHTML(order.financialStatus || "-")}</span>
+                      </div>
+                </div>
+
+                <div class="whumies-order-products-section">
+                  <h4 class="whumies-order-section-title">Ordered Products</h4>
+                  ${productsHTML}
+                </div>
+              </div>
+
+              <div class="whumies-scroll-indicator" id="whumiesScrollIndicator" aria-hidden="true">
+                <span class="whumies-scroll-indicator-text">Scroll to view more</span>
+                <span class="whumies-scroll-indicator-arrow">↓</span>
+              </div>
+            </div>
+
+            <div class="whumies-order-tracking-section">
+              <h4 class="whumies-order-section-title">Tracking Details</h4>
+              <p class="whumies-tracking-helper">
+                Please track your order directly using the link below:
+              </p>
+              ${trackingHTML}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    modeButtons.forEach((btn) => {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        if (isSubmitting) return;
+        clearErrors();
+        setMode(btn.dataset.mode);
+      });
+    });
 
     orderInput.addEventListener("input", function () {
       let cleanValue = sanitizeText(orderInput.value);
+      cleanValue = cleanValue.replace(/^wh/i, "");
       cleanValue = digitsOnly(cleanValue);
       cleanValue = cleanValue.slice(0, ORDER_MAX_LENGTH);
       orderInput.value = cleanValue;
       orderInput.classList.remove("whumies-input-error");
+    });
+
+    orderInput.addEventListener("paste", function (e) {
+      e.preventDefault();
+      const pastedData = (e.clipboardData || window.clipboardData).getData(
+        "text",
+      );
+      let safeData = sanitizeText(pastedData).toLowerCase();
+      safeData = safeData.replace(/^#?wh/i, "");
+      safeData = digitsOnly(safeData).slice(0, ORDER_MAX_LENGTH);
+      orderInput.value = safeData;
     });
 
     mobileInput.addEventListener("input", function () {
@@ -311,29 +1165,26 @@
       mobileInput.value = safeData;
     });
 
-    orderInput.addEventListener("paste", function (e) {
-      e.preventDefault();
-      const pastedData = (e.clipboardData || window.clipboardData).getData(
-        "text",
-      );
-      let safeData = sanitizeText(pastedData).toLowerCase();
-      safeData = safeData.replace(/^wh/i, "");
-      safeData = digitsOnly(safeData).slice(0, ORDER_MAX_LENGTH);
-      orderInput.value = safeData;
+    emailInput.addEventListener("input", function () {
+      emailInput.value = sanitizeText(emailInput.value).toLowerCase();
+      emailInput.classList.remove("whumies-input-error");
+    });
+
+    searchAgainBtn.addEventListener("click", function () {
+      flipToForm();
+      orderInput.focus();
     });
 
     form.addEventListener("submit", async function (e) {
       e.preventDefault();
+      if (isSubmitting) return;
+
       clearErrors();
 
       let rawOrder = sanitizeText(orderInput.value).toLowerCase();
       rawOrder = rawOrder.replace(/^wh/i, "");
       rawOrder = digitsOnly(rawOrder);
 
-      let rawMobile = sanitizeText(mobileInput.value);
-      rawMobile = digitsOnly(rawMobile);
-
-      // ---------- VALIDATION ----------
       if (!rawOrder) {
         showError("Please enter your order number.", "order");
         return;
@@ -347,29 +1198,49 @@
         return;
       }
 
-      if (!rawMobile) {
-        showError("Please enter your mobile number.", "mobile");
-        return;
-      }
-
-      if (
-        rawMobile.length < MOBILE_MIN_LENGTH ||
-        rawMobile.length > MOBILE_MAX_LENGTH
-      ) {
-        showError("Please enter a valid mobile number.", "mobile");
-        return;
-      }
-
-      if (/^0+$/.test(rawMobile)) {
-        showError("Mobile number cannot contain only zeros.", "mobile");
-        return;
-      }
-
       const fullOrderNumber = "wh" + rawOrder;
+      const payload = { orderNumber: fullOrderNumber };
 
-      // ---------- LOADING STATE ----------
-      messageBox.textContent = "Fetching your order details...";
-      messageBox.style.color = "#3d342f";
+      if (activeMode === "mobile") {
+        let rawMobile = sanitizeText(mobileInput.value);
+        rawMobile = digitsOnly(rawMobile);
+
+        if (!rawMobile) {
+          showError("Please enter your mobile number.", "mobile");
+          return;
+        }
+
+        if (
+          rawMobile.length < MOBILE_MIN_LENGTH ||
+          rawMobile.length > MOBILE_MAX_LENGTH
+        ) {
+          showError("Please enter a valid mobile number.", "mobile");
+          return;
+        }
+
+        if (/^0+$/.test(rawMobile)) {
+          showError("Mobile number cannot contain only zeros.", "mobile");
+          return;
+        }
+
+        payload.mobileNumber = rawMobile;
+      } else {
+        const rawEmail = sanitizeText(emailInput.value).toLowerCase();
+
+        if (!rawEmail) {
+          showError("Please enter your email address.", "email");
+          return;
+        }
+
+        if (!isValidEmail(rawEmail)) {
+          showError("Please enter a valid email address.", "email");
+          return;
+        }
+
+        payload.email = rawEmail;
+      }
+
+      setLoadingState(true);
 
       try {
         const response = await fetch(
@@ -379,78 +1250,27 @@
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              orderNumber: fullOrderNumber,
-              mobileNumber: rawMobile,
-            }),
+            body: JSON.stringify(payload),
           },
         );
 
         const data = await response.json();
 
         if (!response.ok || !data.success) {
-          messageBox.textContent = data.message || "No matching order found.";
-          messageBox.style.color = "#bf0000";
+          showError(data.message || "No matching order found.");
           return;
         }
 
-        // ---------- SUCCESS ----------
         renderOrderDetails(data.order);
+        setupScrollIndicator();
+        flipToDetails();
       } catch (error) {
-        messageBox.textContent = "Something went wrong. Please try again.";
-        messageBox.style.color = "#bf0000";
+        showError("Something went wrong. Please try again.");
+      } finally {
+        setLoadingState(false);
       }
     });
 
-    function renderOrderDetails(order) {
-      const messageBox = document.getElementById("whumiesTrackOrderMessage");
-
-      let productsHTML = order.products
-        .map(
-          (p) => `
-    <div style="margin-bottom:8px;">
-      <strong>${p.name}</strong> × ${p.quantity}<br/>
-      ₹${p.lineTotal?.amount || "-"}
-    </div>
-  `,
-        )
-        .join("");
-
-      let trackingHTML = order.tracking.length
-        ? order.tracking
-            .map(
-              (t) => `
-        <div>
-          ${t.company || ""} - 
-          <a href="${t.trackingUrl}" target="_blank">Track Package</a>
-        </div>
-      `,
-            )
-            .join("")
-        : "Tracking not available yet.";
-
-      messageBox.innerHTML = `
-    <div style="margin-top:20px; text-align:left;">
-      <h3 style="margin-bottom:10px;">Order Details</h3>
-
-      <p><strong>Order:</strong> ${order.orderNumber}</p>
-      <p><strong>Status:</strong> ${order.fulfillmentStatus || "Processing"}</p>
-      <p><strong>Payment:</strong> ${order.paymentMethod}</p>
-      <p><strong>Total:</strong> ₹${order.totalAmount?.amount}</p>
-
-      <hr style="margin:15px 0;"/>
-
-      <h4>Products</h4>
-      ${productsHTML}
-
-      <hr style="margin:15px 0;"/>
-
-      <h4>Tracking</h4>
-      ${trackingHTML}
-    </div>
-  `;
-
-      messageBox.style.color = "#3d342f";
-    }
+    setMode("mobile");
   });
 </script>
