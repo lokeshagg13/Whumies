@@ -2,6 +2,7 @@ import express from "express";
 import helmet from "helmet";
 import healthRoutes from "./routes/healthRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
+import blogRoutes from "./routes/blogRoutes.js";
 import { requestLogger } from "./middlewares/logger.js";
 import { corsMiddleware } from "./middlewares/cors.js";
 import { apiLimiter } from "./middlewares/rateLimiter.js";
@@ -24,5 +25,6 @@ app.use("/api", apiLimiter);
 
 app.use(healthRoutes);
 app.use(orderRoutes);
+app.use(blogRoutes);
 
 export default app;

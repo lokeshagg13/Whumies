@@ -67,3 +67,30 @@ export function phonesMatch(submittedPhone, orderPhone) {
 
     return false;
 }
+
+export function validateWriteArticleRequest(body) {
+    if (!body || typeof body !== "object" || Array.isArray(body)) {
+        return { valid: false, status: 400, message: "Invalid request format." };
+    }
+
+    const allowedKeys = ["title", "contentHtml", "tags"];
+    const bodyKeys = Object.keys(body);
+
+    if (!bodyKeys.every((key) => allowedKeys.includes(key))) {
+        return { valid: false, status: 400, message: "Invalid request format." };
+    }
+
+    const { title, contentHtml, tags = [] } = req.body;
+    if (!title || !contentHtml) {
+        return { valid: false, status: 400, message: "Invalid request format." };
+    }
+
+    return {
+        valid: true,
+        data: {
+            title,
+            contentHtml,
+            tags
+        }
+    }
+}

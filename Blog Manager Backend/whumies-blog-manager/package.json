@@ -1,5 +1,5 @@
 {
-  "name": "whumies-order-tracker",
+  "name": "whumies-blog-manager",
   "version": "1.0.0",
   "type": "module",
   "main": "server.js",
